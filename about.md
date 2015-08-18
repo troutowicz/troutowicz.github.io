@@ -1,15 +1,7 @@
 ---
 layout: page
-title: About
+title: About me
 permalink: /about/
 ---
 
-Some information about you!
-
-### More Information
-
-A place to include any other types of information that you'd like to include about yourself.
-
-### Contact me
-
-[email@domain.com](mailto:email@domain.com)
+I am a sysadmin currently working for Cirrus Group LLC. Outside of work I enjoy programming, gaming, reading up on the latest tech, and physical fitness.
