@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Local script functions on remote host
+title: Remotely executing local Bash functions
 ---
 
 While writing a bash script to help automate one of many repeated tasks, I ran into a problem. My script was becoming unmanageable. A requirement of the script was to connect to a remote host and execute a series of commands. To begin with, I started writing this functionality in the simplest way possible.
