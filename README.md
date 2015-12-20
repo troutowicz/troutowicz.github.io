@@ -1,3 +1,1 @@
-# Live and Learn
-
-A blog.
+My blog.
