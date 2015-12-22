@@ -8,8 +8,8 @@ While writing a bash script to help automate one of many repeated tasks, I ran i
 ```bash
 #!/bin/bash
 
-USER="user"
-HOST="host"
+USER=$1
+HOST=$2
 
 ssh $USER@$HOST "
     command1
@@ -18,56 +18,61 @@ ssh $USER@$HOST "
     ...
 "
 ```
- For a real basic script, this method would work fine. But in my case, I had variables that needed evaluating as well as some command substitutions.
+ For a real basic script, this method would work fine. But as requirements grew, this method became less favorable.
 
  ```bash
 #!/bin/bash
 
-USER="user"
-HOST="host"
-SERVICE="/path/to/dir"
+USER=$1
+HOST=$2
+APP=$3
+WEBAPP=$4
 
-ssh -t $USER@$HOST "
-    sudo $SERVICE/bin/shutdown.sh > /dev/null 2>&1
-    until [[ \$(pgrep -u root -f $SERVICE) == '' ]]; do
-        echo 'Stopping service...'
-        sleep 5
-    done
+ssh $USER@$HOST "
+    echo \"Stopping $APP tomcat service...\"
+    sudo systemctl stop $APP
 
-    # execute commands while service is down
+    echo \"Deploying app...\"
+    cd $WEBAPP
+    jar -xvf /tmp/${APP}.war
 
-    echo 'Starting service...'
-    sudo nohup $SERVICE/bin/startup.sh > /dev/null 2>&1
+    echo \"Starting $APP tomcat service...\"
+    sudo systemctl start $APP
+
+    rm /tmp/${APP}.war
 "
  ```
 
-Gross. I now had to be mindful of using single or double quotes, some command substitutions needed to occur locally while others remotely, and most annoyingly my syntax highlighting was broke. There has to be a better way.
+This isn't terrible... but it's not good either. String quoting was becoming a nuisance and I wanted proper syntax highlighting.
 
 The [declare](http://www.tldp.org/LDP/abs/html/declareref.html) command has a useful `-f` option that will list all defined functions in the current script. It also allows specifying which functions should be listed. By passing this list to the remote host the functions get defined remotely making them available to be executed.
 
 ```bash
 #!/bin/bash
 
-USER="user"
-HOST="host"
-SERVICE="/path/to/dir"
+USER=$1
+HOST=$2
+APP=$3
+WEBAPP=$4
 
-task () {
-    SERVICE=$1
+deploy () {
+    APP=$1
+    WEBAPP=$2
 
-    sudo $SERVICE/bin/shutdown.sh > /dev/null 2>&1
-    until [[ $(pgrep -u root -f $SERVICE) == "" ]]; do
-        echo "Stopping service..."
-        sleep 5
-    done
+    echo "Stopping $APP tomcat service..."
+    sudo systemctl stop $APP
 
-    # execute commands while service is down
+    echo "Deploying app..."
+    cd $WEBAPP
+    jar -xvf /tmp/${APP}.war
 
-    echo "Starting service..."
-    sudo nohup $SERVICE/bin/startup.sh > /dev/null 2>&1
+    echo "Starting $APP tomcat service..."
+    sudo systemctl start $APP
+
+    rm /tmp/${APP}.war
 }
 
-ssh -t $USER@$HOST "$(declare -f task); task $SERVICE"
+ssh $USER@$HOST "$(declare -f deploy); deploy $APP $WEBAPP"
 ```
 
 Now I can sanely add functionality without the added complexities and can enjoy my syntax highlighting!
