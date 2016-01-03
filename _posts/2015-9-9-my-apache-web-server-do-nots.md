@@ -53,7 +53,7 @@ Make sure to handle requests that contain the servers IP in the `Host` header. N
 
 **DO NOT forget to DRY**
 
-**D**on't **R**epeat **Y**ourself whenever possible. When managing alot of virtual hosts, configuration can become unmanageable fast. Modularizing blocks of configuration and using the `Include` directive is one way to simplify configuration and avoid repeats. This can be especially elegant when managing many sub-domain virtual hosts that use the same wildcard SSL certificate. Placing the SSL conf into a separate file and `Include`ing it in the first Name-based virtual host will configure SSL for all virtual hosts belonging to that Name-based IP.
+**D**on't **R**epeat **Y**ourself whenever possible. When managing a lot of virtual hosts, configuration can become unmanageable fast. Modularizing blocks of configuration and using the `Include` directive is one way to simplify configuration and avoid repeats. This can be especially elegant when managing many sub-domain virtual hosts that use the same wildcard SSL certificate. Placing the SSL conf into a separate file and `Include`ing it in the first Name-based virtual host will configure SSL for all virtual hosts belonging to that Name-based IP.
 
 More reading:
 [Link 1](http://httpd.apache.org/docs/2.4/mod/core.html#include) [Link 2](https://wiki.apache.org/httpd/NameBasedSSLVHosts)

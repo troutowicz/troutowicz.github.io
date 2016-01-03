@@ -29,14 +29,14 @@ APP=$3
 WEBAPP=$4
 
 ssh $USER@$HOST "
-    echo \"Stopping $APP tomcat service...\"
+    echo \"Stopping $APP service...\"
     sudo systemctl stop $APP
 
     echo \"Deploying app...\"
     cd $WEBAPP
     jar -xvf /tmp/${APP}.war
 
-    echo \"Starting $APP tomcat service...\"
+    echo \"Starting $APP service...\"
     sudo systemctl start $APP
 
     rm /tmp/${APP}.war
@@ -59,14 +59,14 @@ deploy () {
     APP=$1
     WEBAPP=$2
 
-    echo "Stopping $APP tomcat service..."
+    echo "Stopping $APP service..."
     sudo systemctl stop $APP
 
     echo "Deploying app..."
     cd $WEBAPP
     jar -xvf /tmp/${APP}.war
 
-    echo "Starting $APP tomcat service..."
+    echo "Starting $APP service..."
     sudo systemctl start $APP
 
     rm /tmp/${APP}.war

@@ -7,9 +7,9 @@ Before moving to [Ansible](http://www.ansible.com/) for automation and config ma
 
 Ansible is designed to execute tasks asynchronously, meaning a task will execute on multiple hosts in parallel. This behavior is necessary for an efficient automation tool, but I still wanted to perform some tasks serially while making use of Ansible's inventory files. Luckily, Ansible's Python API provides a trivial solution.
 
-**Note: The following code snippets will be referencing the API of Ansible [1.9.4-1](https://github.com/ansible/ansible/tree/5af1cda7c93375bc84296c641ace49bca8657e6c).**
+Ansible has a class named [Inventory](https://github.com/ansible/ansible/blob/5af1cda7c93375bc84296c641ace49bca8657e6c/lib/ansible/inventory/__init__.py). This class contains everything needed for parsing Ansible inventory files, obtaining a subset of hosts, and accessing host/group vars.
 
-Ansible has a class named [Inventory](https://github.com/ansible/ansible/blob/5af1cda7c93375bc84296c641ace49bca8657e6c/lib/ansible/inventory/__init__.py). This class contains everything needed for parsing Ansible inventory files, obtaining a subset of hosts, and loading host/group variables.
+**Note: This code snippet references the API of Ansible [1.9.4-1](https://github.com/ansible/ansible/tree/5af1cda7c93375bc84296c641ace49bca8657e6c).**
 
 ```python
 from ansible.inventory import Inventory
@@ -24,7 +24,7 @@ inventory.subset('appservers')
 inventory.get_variables('appserver01')
 ```
 
-Wow, that was easy. At this point, I had everything I needed to integrate my script with Ansible's inventory system. One other requirement I had was to have CLI options similar to `ansible-playbook`.
+Wow, that was easy. I now have everything I need to integrate my script with Ansible's inventory system. One other requirement I have is to have CLI options similar to the `ansible` executable.
 
 ```
 usage: ansible-live [-h] [-u USER] [-i INVENTORY] [-l LIMIT] command
@@ -41,4 +41,4 @@ optional arguments:
                         Further limits the selected host/group patterns.
 ```
 
-Great! What I feared was going to a headache to integrate was suprisingly straight forward. If you are interested in my finished script, I have shared it on GitHub [here](https://github.com/troutowicz/ansible-live).
+Great! What I feared would be a headache to integrate was surprisingly straight forward. If you are interested in my finished script, I have shared it on GitHub [here](https://github.com/troutowicz/ansible-live).

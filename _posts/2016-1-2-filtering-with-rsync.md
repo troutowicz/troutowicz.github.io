@@ -63,7 +63,7 @@ sent 474 bytes  received 154 bytes  1256.00 bytes/sec
 total size is 0  speedup is 0.00
 ```
 
-This method works fine if the plan is to put the command in a script for repeated use. But what if we want to interactively test the options on the command line? The above solution can be typed on the command line just fine, but the escape characters and long option names leave alot to be desired. What if we explicitly use rsync's `filter` option and provide the filters within a [here doc](http://tldp.org/LDP/abs/html/here-docs.html)?
+This method works fine if the plan is to put the command in a script for repeated use. But what if we want to interactively test the options on the command line? The above solution can be typed on the command line just fine, but the escape characters and long option names leave a lot to be desired. What if we explicitly use rsync's `filter` option and provide the filters within a [here doc](http://tldp.org/LDP/abs/html/here-docs.html)?
 
 ```
 -f, --filter=RULE           add a file-filtering RULE
@@ -80,4 +80,4 @@ rsync -azvmf '. -' src/ dst <<EOF
 EOF
 ```
 
-This method allows filters on multiple lines without escape characters, and provides a more natural way to include/exclude files. I think that this solution is preferrable, in every case, with the former solution. Not only are the latter's filters more visually appeasing, but they are also easier to type and interpret.
+This method allows filters on multiple lines without escape characters, and provides a more natural way to include/exclude files. I think that this solution is preferable, in every case, with the former solution. Not only are the filters more visually appeasing, but they are also easier to type and interpret.
