@@ -3,11 +3,13 @@ layout: post
 title: Live output with Ansible
 ---
 
-Before moving to [Ansible](http://www.ansible.com/) for automation and config management I used various ad-hoc scripts for simplifying remote tasks. One script in particular would iterate over a set of hosts and serially execute a command on each. This script is very helpful due to the system variance in my environment and makes troubleshooting problems easier. Uses include viewing a conf file with a text editor, watching a log file in real time, and listing contents of directories. Ansible, however, does not work serially.
+Before moving to [Ansible](http://www.ansible.com/) for automation and config management I used various ad-hoc scripts for simplifying remote tasks. One script, in particular, iterates over a set of hosts and serially executes a command on each. Due to the system variance in my environment this script has become incredibly helpful. It provides a simple interface for troubleshooting problems quickly and efficiently. Uses include restarting services, opening a file in a text editor, watching a log file in real time, and listing contents of directories. 
 
-Ansible is designed to execute tasks asynchronously, meaning a task will execute on multiple hosts in parallel. This behavior is necessary for an efficient automation tool, but I still wanted to perform some tasks serially while making use of Ansible's inventory files. Luckily, Ansible's Python API provides a trivial solution.
+When trying to produce a similar script in Ansible, I soon found that it could not be done. This is by [design](https://github.com/ansible/ansible/issues/3887). Ansible executes tasks asynchronously, meaning a task will run on multiple hosts simultaneously. A side effect of this design is that displaying real-time output for a large amount of simultaneous tasks becomes difficult, if not unrealistic. Because of this, Ansible will only provide a remote task's output _after_ the task returns an exit code. This behavior is necessary for Ansible to perform efficiently at scale.
 
-Ansible has a class named [Inventory](https://github.com/ansible/ansible/blob/5af1cda7c93375bc84296c641ace49bca8657e6c/lib/ansible/inventory/__init__.py). This class contains everything needed for parsing Ansible inventory files, obtaining a subset of hosts, and accessing host/group vars.
+However, in my environment, performing the occasional ad-hoc task serially does make sense. When log monitoring has not reached every running application, or when directory paths vary on each server, having a way to quickly access and manage these nuances can be a lifesaver. I just need a way to _plug_ into Ansible's ecosystem and, luckily, Ansible's Python API provides a trivial solution.
+
+Ansible has a class named [Inventory](https://github.com/ansible/ansible/blob/5af1cda7c93375bc84296c641ace49bca8657e6c/lib/ansible/inventory/__init__.py). This class contains everything needed for parsing Ansible inventory files, obtaining a subset of hosts, and accessing host/group vars. The three functions below cover my needs.
 
 **Note: This code snippet references the API of Ansible [1.9.4-1](https://github.com/ansible/ansible/tree/5af1cda7c93375bc84296c641ace49bca8657e6c).**
 
@@ -24,7 +26,7 @@ inventory.subset('appservers')
 inventory.get_variables('appserver01')
 ```
 
-Wow, that was easy. I now have everything I need to integrate my script with Ansible's inventory system. One other requirement I have is to have CLI options similar to the `ansible` executable.
+One other requirement I have is to provide CLI options similar to the `ansible` executable. `argparse` makes this easy.
 
 ```
 usage: ansible-live [-h] [-u USER] [-i INVENTORY] [-l LIMIT] command
@@ -41,4 +43,4 @@ optional arguments:
                         Further limits the selected host/group patterns.
 ```
 
-Great! What I feared would be a headache to integrate was surprisingly straight forward. If you are interested in my finished script, I have shared it on GitHub [here](https://github.com/troutowicz/ansible-live).
+Great! What I feared would be a headache to integrate was surprisingly straight forward. If you are interested in a generic `ansible`-like script using these functions, I have shared one on GitHub [here](https://github.com/troutowicz/ansible-live).
