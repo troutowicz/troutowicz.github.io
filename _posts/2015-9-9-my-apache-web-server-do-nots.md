@@ -49,7 +49,7 @@ More reading:
 
 **DO NOT forget about requests targeting a server's IP**
 
-Make sure to handle requests that contain the servers IP in the `Host` header. Not doing so could cause unexpected behavior and direct the user to an unexpected default virtual host. In some cases this can provide unintentional insight into the apps architectural design and harm your site's security. As an example, consider an Apache web server working as a reverse proxy for a Tomcat instance. If the request is not handled by a particular virtual host, then defaults to the first declared virtual host which passes requests to Tomcat, and that Tomcat instance does not handle IP based requests, you might be presented with the default Tomcat app which provides access to the Tomcat manager.
+Not handling IP requests can sometimes create unexpected behavior. If the request does not get matched by the correct vhost, the default vhost may provide unintentional insight into an apps tech stack.
 
 **DO NOT forget to DRY**
 
